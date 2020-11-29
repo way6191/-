@@ -37,7 +37,7 @@ fn1().then((result) => {
   console.log(result);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject(4);
+      reject('error message');
     }, 1000);
   });
 }).catch((error) => {
@@ -48,7 +48,7 @@ fn1().then((result) => {
 1
 2
 3
-4
+error message
 ```
 
 ### `async`|`await`
@@ -82,10 +82,23 @@ async function fn3() {
   });
 }
 
+async function fn4() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('error message');
+    }, 1000);
+  });
+}
+
 async function run() {
   console.log(await fn1());
   console.log(await fn2());
   console.log(await fn3());
+  try {
+    await fn4();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 run();
@@ -94,6 +107,8 @@ run();
 1
 2
 3
+3
+error message
 ```
 
 ```javascript
@@ -101,13 +116,19 @@ const fs = require('fs')
 const promisify = require('util').promisify;
 const readFile = promisify(fs.readFile)
 
-async function run () {
-  const res1 = await readFile('./1.txt', 'utf8');
-  const res2 = await readFile('./2.txt', 'utf8');
-  const res3 = await readFile('./3.txt', 'utf8');
-  console.log(res1);
-  console.log(res2);
-  console.log(res3);
+async function run() {
+  try {
+    const res1 = await readFile('./1.txt', 'utf8');
+    const res2 = await readFile('./2.txt', 'utf8');
+    const res3 = await readFile('./3.txt', 'utf8');
+    console.log(res1);
+    console.log(res2);
+    console.log(res3);
+    const res4 = await readFile('./不存在.txt', 'utf8');
+  } catch (error) {
+    console.log(error);
+  }
+
 }
 
 run();
@@ -116,6 +137,12 @@ run();
 1
 2
 3
+[Error: ENOENT: no such file or directory, open 'E:\js\不存在.txt'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'E:\\js\\不存在.txt'
+}
 ```
 
 ```javascript
