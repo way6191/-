@@ -91,10 +91,10 @@ async function fn4() {
 }
 
 async function run() {
-  console.log(await fn1());
-  console.log(await fn2());
-  console.log(await fn3());
   try {
+    console.log(await fn1());
+    console.log(await fn2());
+    console.log(await fn3());
     await fn4();
   } catch (error) {
     console.log(error);
@@ -106,7 +106,6 @@ run();
 // 结果
 1
 2
-3
 3
 error message
 ```
